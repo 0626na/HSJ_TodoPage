@@ -19,3 +19,8 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* globals.css */
+input {
+  color: #000000; /* 원하는 색상으로 변경 */
+}
