@@ -112,3 +112,25 @@
   - 전체 레이아웃은 flex와 grid를 사용하여 구성되어 있으며, 각 컴포넌트에 고정 높이, 최소/최대 너비, gap 등을 지정해 레이아웃 안정성을 유지합니다.
   - Hover 효과, 그림자, 변환(translate) 등의 클래스를 사용해 입체감 및 부드러운 애니메이션 효과를 적용합니다.
   - 드래그 중에는 원본 요소를 숨기고 DragOverlay로 미리보기를 보여주는 스타일을 적용합니다.
+
+## 데모영상
+
+### TodoBoard 생성, 삭제
+
+![보드생성](demo/TodoListCreate.gif)
+
+### Todo 생성,삭제,수정
+
+![todo생성삭제](demo/TodoCreateAndDeleteAndModified.gif)
+
+### 보드간에 위치 변경
+
+![보드위치변경](demo/BoardMove.gif)
+
+### 보드내 Todo간 위치 변경
+
+![보드내 todo위치 변경](demo/todoReorder.gif)
+
+### 보드간 Todo 위치 변경
+
+![보드간 todo 위치 변경](demo/todoMove.gif)
