@@ -19,4 +19,23 @@ export type Action =
       boardId: string;
       todoId: string;
       text: string;
+    }
+  | { type: "REORDER_BOARDS"; activeId: string; overId: string }
+  | {
+      type: "REORDER_TODOS";
+      boardId: string;
+      activeId: string;
+      overId: string;
+    }
+  | {
+      type: "MOVE_TODO";
+      sourceBoardId: string;
+      targetBoardId: string;
+      todoId: string;
+      overId: string;
     };
+
+export type DraggableData =
+  | { type: "board" }
+  | { type: "todo"; boardId: string }
+  | { type: "todoContainer"; boardId: string };
