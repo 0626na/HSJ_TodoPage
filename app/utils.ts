@@ -1,4 +1,5 @@
-import { Action, Board } from "@/app/type";
+import { Action, Board, Todo } from "@/app/type";
+import { arrayMove } from "@dnd-kit/sortable";
 import { v4 as uuidv4 } from "uuid";
 
 // localStorage에 저장될 키 값
@@ -39,7 +40,7 @@ export const todoReducer = (boards: Board[], action: Action) => {
         if (board.id == action.boardId)
           return {
             ...board,
-            todos: [...board.todos, { id: uuidv4(), text: action.text }],
+            todos: [{ id: uuidv4(), text: action.text }, ...board.todos],
           };
 
         return board;
@@ -68,5 +69,82 @@ export const todoReducer = (boards: Board[], action: Action) => {
           };
         return board;
       });
+
+    case "REORDER_BOARDS": {
+      const { activeId, overId } = action;
+      const oldIndex = boards.findIndex((board) => board.id === activeId);
+      const newIndex = boards.findIndex((board) => board.id === overId);
+      return arrayMove(boards, oldIndex, newIndex);
+    }
+
+    case "REORDER_TODOS": {
+      const { boardId, activeId, overId } = action;
+      return boards.map((board) => {
+        if (board.id === boardId) {
+          const oldIndex = board.todos.findIndex(
+            (todo) => todo.id === activeId
+          );
+          const newIndex = board.todos.findIndex((todo) => todo.id === overId);
+          return {
+            ...board,
+            todos: arrayMove(board.todos, oldIndex, newIndex),
+          };
+        }
+        return board;
+      });
+    }
+
+    case "MOVE_TODO": {
+      const { sourceBoardId, targetBoardId, todoId, overId } = action;
+      let movedTodo: Todo | null = null;
+      const newBoards = boards
+        .map((board) => {
+          if (board.id === sourceBoardId) {
+            const newTodos = board.todos.filter((todo) => {
+              if (todo.id === todoId) {
+                movedTodo = todo;
+                return false;
+              }
+              return true;
+            });
+            return { ...board, todos: newTodos };
+          }
+          return board;
+        })
+        .map((board) => {
+          if (board.id === targetBoardId && movedTodo) {
+            const overIndex = board.todos.findIndex(
+              (todo) => todo.id === overId
+            );
+            if (overIndex === -1) {
+              return { ...board, todos: [...board.todos, movedTodo] };
+            } else {
+              const newTodos = [...board.todos];
+              newTodos.splice(overIndex, 0, movedTodo);
+              return { ...board, todos: newTodos };
+            }
+          }
+          return board;
+        });
+      return newBoards;
+    }
   }
+};
+
+/**
+ * id로 board를 찾는 함수
+ */
+export const findBoardById = (boards: Board[], boardId: string) => {
+  return boards.find((b: Board) => b.id === boardId) || null;
+};
+
+/**
+ * id로 Todo 찾는 함수
+ */
+export const findTodoById = (boards: Board[], todoId: string) => {
+  for (const board of boards) {
+    const found = board.todos.find((todo: Todo) => todo.id === todoId);
+    if (found) return found;
+  }
+  return null;
 };
